@@ -38,17 +38,17 @@ module.exports = {
           allowNull: false,
         },
         rating: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.DECIMAL,
           allowNull: false,
           default: 0,
         },
         reviews_count: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.DECIMAL,
           allowNull: false,
           default: 0,
         },
         price: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.DECIMAL,
           allowNull: false,
           default: 0,
         },
@@ -58,15 +58,17 @@ module.exports = {
           default: 0,
         },
         created_at: {
+          type: 'TIMESTAMP',
+          defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
           allowNull: false,
-          type: Sequelize.DATE,
         },
         updated_at: {
+          type: 'TIMESTAMP',
+          defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
           allowNull: false,
-          type: Sequelize.DATE,
         },
       },
-      { timestamps: true, underscored: true }
+      { underscored: true }
     );
   },
 
