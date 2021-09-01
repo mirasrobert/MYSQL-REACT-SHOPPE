@@ -22,4 +22,7 @@ const connectDB = () => {
     .catch((err) => console.error(`Database Error: ${err}`.red.underline.bold));
 };
 
-module.exports = connectDB;
+module.exports = {
+  sequelize,
+  connectDB,
+};
