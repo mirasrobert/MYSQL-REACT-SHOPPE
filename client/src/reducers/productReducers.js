@@ -6,6 +6,7 @@ import {
 
 const defaultState = {
   products: [],
+  error: null,
 };
 
 export const productListReducer = (state = defaultState, action) => {
@@ -14,18 +15,21 @@ export const productListReducer = (state = defaultState, action) => {
   switch (type) {
     case PRODUCT_LIST_REQUEST:
       return {
+        ...state,
         loading: true,
         products: [],
       };
 
     case PRODUCT_LIST_SUCCESS:
       return {
+        ...state,
         loading: false,
         products: payload,
       };
 
     case PRODUCT_LIST_FAIL:
       return {
+        ...state,
         loading: false,
         error: payload,
       };

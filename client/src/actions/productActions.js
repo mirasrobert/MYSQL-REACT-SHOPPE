@@ -19,12 +19,12 @@ export const listProducts = () => async (dispatch) => {
       payload: data.products,
     });
   } catch (error) {
+    // Get the errors
+    const err = error.response.data;
+
     dispatch({
       type: PRODUCT_LIST_FAIL,
-      action:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+      payload: err.message,
     });
   }
 };

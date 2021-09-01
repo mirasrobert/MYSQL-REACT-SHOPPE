@@ -18,7 +18,6 @@ app.get('/', (req, res) => {
 app.use('/api/products', require('./routes/api/products'));
 
 // Error handling
-
 app.use(require('./middleware/errors').notFound);
 app.use(require('./middleware/errors').errorHandler);
 
