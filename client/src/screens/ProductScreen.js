@@ -18,7 +18,7 @@ import {
 } from 'react-bootstrap';
 import Rating from '../components/products/Rating';
 
-const ProductScreen = ({ match }) => {
+const ProductScreen = ({ history, match }) => {
   const dispatch = useDispatch();
 
   const productDetails = useSelector((state) => state.productDetails);
@@ -27,6 +27,22 @@ const ProductScreen = ({ match }) => {
   useEffect(() => {
     dispatch(listProductDetails(match.params.id));
   }, [dispatch, match]);
+
+  const [qty, setQty] = useState(1);
+
+  const setQuantity = (e) => {
+    if (e.target.value > product.count_in_stock) {
+      setQty(product.count_in_stock);
+    } else if (e.target.value < 1) {
+      setQty(1);
+    } else {
+      setQty(e.target.value);
+    }
+  };
+
+  const addToCartHandler = () => {
+    history.push(`/cart/${match.params.id}?qty=${qty}`);
+  };
 
   return (
     <>
@@ -65,35 +81,46 @@ const ProductScreen = ({ match }) => {
               </ListGroup.Item>
               <ListGroup.Item>
                 <p>
-                  {product.count_in_stock > 0
-                    ? `${product.count_in_stock} left on stock`
-                    : 'Out Of Stock'}
+                  {product.count_in_stock > 0 ? (
+                    <span className='text-info'>
+                      {product.count_in_stock} left on stock
+                    </span>
+                  ) : (
+                    <span className='text-danger'>Out Of Stock</span>
+                  )}
                 </p>
                 <Row>
                   <Col>
-                    <Form.Group
-                      as={Row}
-                      className='mb-3'
-                      controlId='formPlaintextPassword'>
-                      <Form.Label column sm='2'>
-                        Quantity:
-                      </Form.Label>
-                      <Col md='5' sm='3'>
-                        <InputGroup>
-                          <FormControl
-                            type='number'
-                            placeholder='1'
-                            disabled={product.count_in_stock === 0}
-                          />
-                          <Button
-                            variant='primary'
-                            size='sm'
-                            disabled={product.count_in_stock === 0}>
-                            Add To Cart
-                          </Button>
-                        </InputGroup>
-                      </Col>
-                    </Form.Group>
+                    {product.count_in_stock > 0 && (
+                      <Form.Group
+                        as={Row}
+                        className='mb-3'
+                        controlId='formPlaintextPassword'>
+                        <Form.Label column sm='2'>
+                          Quantity:
+                        </Form.Label>
+                        <Col md='5' sm='3'>
+                          <InputGroup>
+                            <FormControl
+                              type='number'
+                              placeholder='1'
+                              min='1'
+                              max={product.count_in_stock}
+                              value={qty}
+                              onChange={(e) => setQuantity(e)}
+                              disabled={product.count_in_stock === 0}
+                            />
+                            <Button
+                              onClick={addToCartHandler}
+                              variant='primary'
+                              size='sm'
+                              disabled={product.count_in_stock === 0}>
+                              Add To Cart
+                            </Button>
+                          </InputGroup>
+                        </Col>
+                      </Form.Group>
+                    )}
                   </Col>
                 </Row>
               </ListGroup.Item>

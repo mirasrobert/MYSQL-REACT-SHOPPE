@@ -7,12 +7,26 @@ import {
   productDetailsReducer,
 } from './reducers/productReducers';
 
+import { cartReducer } from './reducers/cartReducers';
+
 const rootReducer = combineReducers({
   productList: productListReducer,
   productDetails: productDetailsReducer,
+  cart: cartReducer,
 });
 
-const defaultState = {};
+/*
+ * On The Every Load,
+ * if there is cart in localstorage then put that in redux state
+ * or else, then put an empty array
+ */
+const cartItemsFromStorage = localStorage.getItem('cartItems')
+  ? JSON.parse(localStorage.getItem('cartItems'))
+  : [];
+
+const defaultState = {
+  cart: { cartItems: cartItemsFromStorage },
+};
 
 const store = createStore(
   rootReducer,

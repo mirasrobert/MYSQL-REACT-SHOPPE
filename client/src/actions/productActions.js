@@ -6,7 +6,7 @@ import {
   PRODUCT_DETAILS_REQUEST,
   PRODUCT_DETAILS_SUCCESS,
   PRODUCT_DETAILS_FAIL,
-} from '../constants/reducerConstatants';
+} from '../constants/reducerConstants';
 
 // @desc Get the list of Products
 export const listProducts = () => async (dispatch) => {
