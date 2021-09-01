@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import Loader from '../components/ui/Loader';
+import AlertMessage from '../components/ui/AlertMessage';
+import { listProductDetails } from '../actions/productActions';
 
 import {
   Row,
@@ -16,17 +19,14 @@ import {
 import Rating from '../components/products/Rating';
 
 const ProductScreen = ({ match }) => {
-  const [product, setProduct] = useState({});
+  const dispatch = useDispatch();
+
+  const productDetails = useSelector((state) => state.productDetails);
+  const { loading, error, product } = productDetails;
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      const { data } = await axios.get(`/api/products/${match.params.id}`);
-
-      setProduct(data.product);
-    };
-
-    fetchProducts();
-  }, [match]);
+    dispatch(listProductDetails(match.params.id));
+  }, [dispatch, match]);
 
   return (
     <>
@@ -34,64 +34,73 @@ const ProductScreen = ({ match }) => {
         {' '}
         Go Back
       </Link>
-      <Row>
-        <Col md='6'>
-          <Image src={product.image} alt={product.name} fluid />
-        </Col>
-        <Col md='6'>
-          <ListGroup variant='flush'>
-            <ListGroup.Item>
-              <h3>{product.name}</h3>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              {product.rating && (
-                <Rating
-                  value={product.rating}
-                  text={`${product.reviews_count} reviews`}
-                />
-              )}
-            </ListGroup.Item>
-            <ListGroup.Item>
-              Price: <strong>${product.price}</strong>{' '}
-            </ListGroup.Item>
-            <ListGroup.Item>Description: {product.description}</ListGroup.Item>
-            <ListGroup.Item>
-              <p>
-                {product.countInStock > 0
-                  ? `${product.countInStock} left on stock`
-                  : 'Out Of Stock'}
-              </p>
-              <Row>
-                <Col>
-                  <Form.Group
-                    as={Row}
-                    className='mb-3'
-                    controlId='formPlaintextPassword'>
-                    <Form.Label column sm='2'>
-                      Quantity:
-                    </Form.Label>
-                    <Col md='5' sm='3'>
-                      <InputGroup>
-                        <FormControl
-                          type='number'
-                          placeholder='1'
-                          disabled={product.count_in_stock === 0}
-                        />
-                        <Button
-                          variant='primary'
-                          size='sm'
-                          disabled={product.count_in_stock === 0}>
-                          Add To Cart
-                        </Button>
-                      </InputGroup>
-                    </Col>
-                  </Form.Group>
-                </Col>
-              </Row>
-            </ListGroup.Item>
-          </ListGroup>
-        </Col>
-      </Row>
+
+      {loading ? (
+        <Loader variant='info' />
+      ) : error ? (
+        <AlertMessage variant='danger'>{error}</AlertMessage>
+      ) : (
+        <Row>
+          <Col md='6'>
+            <Image src={product.image} alt={product.name} fluid />
+          </Col>
+          <Col md='6'>
+            <ListGroup variant='flush'>
+              <ListGroup.Item>
+                <h3>{product.name}</h3>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                {product.rating && (
+                  <Rating
+                    value={product.rating}
+                    text={`${product.reviews_count} reviews`}
+                  />
+                )}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                Price: <strong>${product.price}</strong>{' '}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                Description: {product.description}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <p>
+                  {product.count_in_stock > 0
+                    ? `${product.count_in_stock} left on stock`
+                    : 'Out Of Stock'}
+                </p>
+                <Row>
+                  <Col>
+                    <Form.Group
+                      as={Row}
+                      className='mb-3'
+                      controlId='formPlaintextPassword'>
+                      <Form.Label column sm='2'>
+                        Quantity:
+                      </Form.Label>
+                      <Col md='5' sm='3'>
+                        <InputGroup>
+                          <FormControl
+                            type='number'
+                            placeholder='1'
+                            disabled={product.count_in_stock === 0}
+                          />
+                          <Button
+                            variant='primary'
+                            size='sm'
+                            disabled={product.count_in_stock === 0}>
+                            Add To Cart
+                          </Button>
+                        </InputGroup>
+                      </Col>
+                    </Form.Group>
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+            </ListGroup>
+          </Col>
+        </Row>
+      )}
     </>
   );
 };

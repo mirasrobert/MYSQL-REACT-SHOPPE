@@ -2,14 +2,17 @@ import {
   PRODUCT_LIST_REQUEST,
   PRODUCT_LIST_SUCCESS,
   PRODUCT_LIST_FAIL,
+  PRODUCT_DETAILS_REQUEST,
+  PRODUCT_DETAILS_SUCCESS,
+  PRODUCT_DETAILS_FAIL,
 } from '../constants/reducerConstatants';
 
-const defaultState = {
+const productListDefault = {
   products: [],
   error: null,
 };
 
-export const productListReducer = (state = defaultState, action) => {
+export const productListReducer = (state = productListDefault, action) => {
   const { type, payload } = action;
 
   switch (type) {
@@ -28,6 +31,44 @@ export const productListReducer = (state = defaultState, action) => {
       };
 
     case PRODUCT_LIST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+
+    default:
+      return state;
+  }
+};
+
+const productDetailsDefault = {
+  product: {
+    reviews: [],
+  },
+};
+
+export const productDetailsReducer = (
+  state = productDetailsDefault,
+  action
+) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case PRODUCT_DETAILS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+
+    case PRODUCT_DETAILS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        product: payload,
+      };
+
+    case PRODUCT_DETAILS_FAIL:
       return {
         ...state,
         loading: false,

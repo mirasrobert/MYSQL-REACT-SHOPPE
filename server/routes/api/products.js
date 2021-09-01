@@ -4,6 +4,15 @@ const asyncHandler = require('express-async-handler');
 
 // Models
 const Product = require('../../models/Product');
+const Review = require('../../models/Review');
+
+// Relationship or Association
+// @desc Product can have many reviews
+Product.hasMany(Review, { foreignKey: 'product_id', as: 'reviews' });
+
+// Relationship or Association
+// @desc Review is only belong to a specific product
+Review.belongsTo(Product, { foreignKey: 'product_id' });
 
 /*
  * @route 	GET api/products
@@ -27,7 +36,10 @@ router.get(
 router.get(
   '/:id',
   asyncHandler(async (req, res) => {
-    const product = await Product.findByPk(req.params.id); // find by primary key
+    const product = await Product.findOne({
+      where: { id: parseInt(req.params.id) },
+      include: 'reviews',
+    });
 
     // Check if there is a product
     if (!product) {
