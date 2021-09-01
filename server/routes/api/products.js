@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const AsyncHandler = require('express-async-handler');
+const asyncHandler = require('express-async-handler');
 
 // Models
 const Product = require('../../models/Product');
@@ -12,7 +12,7 @@ const Product = require('../../models/Product');
  */
 router.get(
   '/',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const products = await Product.findAll();
 
     res.status(200).json({ products });
@@ -26,12 +26,14 @@ router.get(
  */
 router.get(
   '/:id',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const product = await Product.findByPk(req.params.id); // find by primary key
 
     // Check if there is a product
-    if (!product)
-      return res.status(404).json({ msg: 'Product does not exist' });
+    if (!product) {
+      res.status(404);
+      throw new Error('Product does not exist');
+    }
 
     res.status(200).json({ product });
   })

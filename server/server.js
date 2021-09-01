@@ -14,7 +14,13 @@ app.get('/', (req, res) => {
   res.send('Server Running');
 });
 
+// Define API Routes
 app.use('/api/products', require('./routes/api/products'));
+
+// Error handling
+
+app.use(require('./middleware/errors').notFound);
+app.use(require('./middleware/errors').errorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
