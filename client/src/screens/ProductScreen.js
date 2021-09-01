@@ -22,7 +22,7 @@ const ProductScreen = ({ match }) => {
     const fetchProducts = async () => {
       const { data } = await axios.get(`/api/products/${match.params.id}`);
 
-      setProduct(data);
+      setProduct(data.product);
     };
 
     fetchProducts();
@@ -47,7 +47,7 @@ const ProductScreen = ({ match }) => {
               {product.rating && (
                 <Rating
                   value={product.rating}
-                  text={`${product.numReviews} reviews`}
+                  text={`${product.reviews_count} reviews`}
                 />
               )}
             </ListGroup.Item>
@@ -75,12 +75,12 @@ const ProductScreen = ({ match }) => {
                         <FormControl
                           type='number'
                           placeholder='1'
-                          disabled={product.countInStock === 0}
+                          disabled={product.count_in_stock === 0}
                         />
                         <Button
                           variant='primary'
                           size='sm'
-                          disabled={product.countInStock === 0}>
+                          disabled={product.count_in_stock === 0}>
                           Add To Cart
                         </Button>
                       </InputGroup>
